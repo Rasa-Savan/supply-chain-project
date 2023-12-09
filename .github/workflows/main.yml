@@ -47,7 +47,7 @@ jobs:
         python -m pip install afinn
         python -m pip install vaderSentiment
         python -m pip install pytest
-        cd /FastAPI/server
+        # cd /FastAPI/server
     - name: Test api
       run: |
         pytest
