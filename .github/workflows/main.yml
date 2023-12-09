@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         mkdir FastAPI
-        config/http_ca.crt /etc/ssl/certs
+        cp config/http_ca.crt /etc/ssl/certs
         chown root:root /etc/ssl/certs/http_ca.crt
         python -m pip install --upgrade pip
         pip install "fastapi[all]"
