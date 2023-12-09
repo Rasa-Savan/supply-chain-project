@@ -11,60 +11,38 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: python:3.9
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
       run: |
+        mkdir FastAPI
+        config/http_ca.crt /etc/ssl/certs
+        chown root:root /etc/ssl/certs/http_ca.crt
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install "fastapi[all]"
         python -m pip install --upgrade pip
-        pip install python-jose
+        pip install "uvicorn[standard]"
         python -m pip install --upgrade pip
-        pip install "passlib[bcrypt]"
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    # - name: Test with pytest
-    #   run: |
-    #     pytest
-
-  build-push-container:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Login to DockerHub
-      uses: docker/login-action@v3 
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:latest
-
-  deploy:
-    needs: build-push-container
-    name: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOSTNAME  }}
-          username: ${{ secrets.USER_NAME  }}
-          key: ${{ secrets.AWS_PRIVATE_KEY  }}
-          port: 22
-          script: |
-            sudo docker rm -f fastapi
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:latest
-            sleep 10 
-            sudo docker run -d -p 9000:80 --name fastapi ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app:latest
-            sudo docker ps 
-            sleep 10 
-            curl localhost:9000
-            curl -X 'POST' 'http://localhost:9000/token' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'grant_type=&username=johndoe&password=secret&scope=&client_id=&client_secret='
-            ls 
-            sudo docker images
+        python -m pip install elasticsearch
+        python -m pip install "elasticsearch[async]"
+        python -m pip install --upgrade pip
+        pip install python-dotenv
+        pip install pandas
+        pip install beautifulsoup4
+        pip install numpy
+        pip install seaborn
+        python -m pip install --upgrade pip
+        python -m pip install -U pip
+        python -m pip install -U matplotlib
+        python -m pip install -U nltk
+        python -m pip install --upgrade pip
+        python -m pip install -U scikit-learn
+        python -m pip install textblob
+        python -m pip install afinn
+        python -m pip install vaderSentiment
+        python -m pip install pytest
+        cd /FastAPI/server
+    - name: Test api
+      run: |
+        pytest
