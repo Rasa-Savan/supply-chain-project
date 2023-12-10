@@ -82,15 +82,15 @@ jobs:
           key: ${{ secrets.CONTABO_PRIVATE_KEY  }}
           port: 22
           script: |
-            # docker rm -f supply-chain
-            # docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+            docker rm -f supply-chain
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
             pwd
             ls -l
             cd supply-chain-project
             pwd
             ls -l
-            # docker compose -f docker-compose-spc.yml up -d ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+            docker compose -f docker-compose-spc.yml up -d
             docker ps 
             docker images
-            # sleep 10
-            # curl 'http://localhost:8008/status/db'
+            sleep 10
+            curl 'http://localhost:8008/status/db'
