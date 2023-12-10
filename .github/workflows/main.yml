@@ -80,6 +80,7 @@ jobs:
           host: ${{ secrets.HOSTNAME  }}
           username: ${{ secrets.USER_NAME  }}
           key: ${{ secrets.CONTABO_PRIVATE_KEY  }}
+          password: ${{ secrets.PASSWORD  }}
           port: 22
           script: |
             sudo docker rm -f supply-chain
