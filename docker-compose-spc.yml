@@ -9,8 +9,8 @@ services:
       - "8008:8008"
     networks:
       - supply-chain-net
-    # env_file:
-    #   - config/.env
+    env_file:
+      - config/.env
 
 networks:
   supply-chain-net:

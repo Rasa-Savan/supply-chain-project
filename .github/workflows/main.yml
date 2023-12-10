@@ -61,9 +61,6 @@ jobs:
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v3
-      env:
-        ES_USERNAME: ABC
-        ES_PASSWORD: ABC
       with:
         context: .
         push: true
