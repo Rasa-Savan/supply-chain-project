@@ -29,3 +29,20 @@ def elastic_insert_document(index_name):
         print("Deleting existing document... >>> DONE")
     
     import_csv_to_elastic(client_conn, index_name)
+
+def elastic_select_dataset(index_name):
+    from fastapi import HTTPException
+    record_size = 1000 if index_name == "domains_cleaned" else 30000
+    try:
+        client_conn = elastic_authen()
+        # Perform a search query to retrieve data from Elasticsearch
+        response = client_conn.search(index=index_name, body={"query": {"match_all": {}}, "track_total_hits": True}, size=record_size)
+
+        # Extract relevant information from the response
+        hits = response['hits']['hits']
+        data = [{"_id": hit['_id'], **hit['_source']} for hit in hits]
+
+        return data
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving data from Elasticsearch: {str(e)}")

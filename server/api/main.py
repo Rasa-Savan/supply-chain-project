@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from datetime import datetime, timedelta
@@ -73,7 +73,7 @@ app = FastAPI(
     version="1.0.0",
     openapi_tags=[
         {"name": "TEST", "description": "Testing with github action."},
-        {"name": "DATASET", "description": "API for checking the existing dataset store in CSV and JSON file."},
+        {"name": "DATASET", "description": "API for checking the existing CSV and JSON file dataset incuding retrieve dataset of domains_cleaned, comments_cleaned and sentimental_dataset. NOTE: USE POSTMAN to retrieve data."},
         {"name": "EXECUTION", "description": "API for execution scraping, data cleaning, sentimental and etc."},
         {"name": "SECURITY", "description": "API for generate token and get user detail."},
     ],
@@ -230,3 +230,16 @@ def sentimental_execution(current_user: Annotated[User, Depends(get_current_acti
 def sentimental_plot():
     from utils import pdf_sentimental_plot
     return pdf_sentimental_plot()
+
+
+from enum import Enum
+class DatasetName(str, Enum):
+    domain = "domains_cleaned"
+    comment = "comments_cleaned"
+    sentimental = "sentimental_dataset"
+
+# Protected route for download sentimental plot
+@app.get("/dataset/{dataset_name}", tags=["DATASET"])
+def get_dataset(dataset_name: DatasetName, current_user: Annotated[User, Depends(get_current_active_user)]):
+    from auth.server_authentication import elastic_select_dataset
+    return elastic_select_dataset(dataset_name)
