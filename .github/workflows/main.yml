@@ -74,20 +74,19 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: executing remote ssh commands using password
+      - name: executing remote ssh commands using key
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOSTNAME  }}
           username: ${{ secrets.USER_NAME  }}
           key: ${{ secrets.CONTABO_PRIVATE_KEY  }}
-          password: ${{ secrets.PASSWORD  }}
           port: 22
           script: |
-            sudo docker rm -f supply-chain
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+            docker rm -f supply-chain
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
             sleep 10 
-            sudo docker compose -f docker-compose-spc.yml up -d ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
-            sudo docker ps 
-            sudo docker images
+            docker compose -f docker-compose-spc.yml up -d ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+            docker ps 
+            docker images
             sleep 10 
             curl 'http://localhost:8008/status/db'
