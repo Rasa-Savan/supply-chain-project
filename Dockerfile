@@ -17,6 +17,10 @@ RUN python -m pip install --upgrade pip
 RUN pip install "uvicorn[standard]"
 
 RUN python -m pip install --upgrade pip
+RUN python -m pip install "python-jose[cryptography]"
+RUN python -m pip install "passlib[bcrypt]"
+
+RUN python -m pip install --upgrade pip
 RUN python -m pip install elasticsearch
 RUN python -m pip install "elasticsearch[async]"
 
@@ -28,16 +32,14 @@ RUN pip install numpy
 RUN pip install seaborn
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install -U pip
+RUN python -m pip install -U scikit-learn
 RUN python -m pip install -U matplotlib
 RUN python -m pip install -U nltk
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install -U scikit-learn
 RUN python -m pip install textblob
 RUN python -m pip install afinn
 RUN python -m pip install vaderSentiment
-
 
 EXPOSE 8008
 

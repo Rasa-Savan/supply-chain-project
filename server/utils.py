@@ -48,3 +48,17 @@ def save_pdf_to_elasticsearch():
     res = elastic_authen().index(index="sentimental_plots", id=1, body=doc)
 
     return res
+
+def pdf_sentimental_plot():
+    from fastapi.responses import FileResponse
+    from pathlib import Path
+    # Provide the path to your PDF file
+    pdf_path = Path("./files/plots.pdf")
+
+    # Check if the file exists
+    if pdf_path.is_file():
+        # Return the PDF file using FileResponse
+        return FileResponse(pdf_path, media_type="application/pdf", filename="sentimental_plots.pdf")
+    else:
+        # If the file doesn't exist, return an HTTP 404 response
+        return {"error": "File not found"}, 404

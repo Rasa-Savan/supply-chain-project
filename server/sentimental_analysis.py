@@ -94,9 +94,10 @@ def sentimental_analysis():
     pdf_pages.savefig() ##>>> save plot
     MatchTextBlob = df['rating_scale3'] == df['sentiment_TextBloB']
     df
-    print(sum(MatchTextBlob))
-    print(len(df))
-    print(sum(MatchTextBlob)/len(df))
+    rating_accuracy_textblob = (sum(MatchTextBlob) / len(df)) * 100
+    print("Number of sentimental Analysis by TextBlob:", sum(MatchTextBlob))
+    print("Number of dataset:", len(df))
+    print(f"Accuracy percentage of sentimental by TextBlob {str(round(rating_accuracy_textblob, 2))}%")
 
     #2. Sentiment Analysis with Afinn¶
     afn = Afinn(emoticons=True) 
@@ -141,9 +142,10 @@ def sentimental_analysis():
     pdf_pages.savefig() ##>>> save plot
     MatchAfinn = df['rating_scale3'] == df['sentiment_Afinn']
     df
-    print(sum(MatchAfinn))
-    print(len(df))
-    print(sum(MatchAfinn)/len(df))
+    rating_accuracy_afinn = (sum(MatchAfinn) / len(df)) * 100
+    print("Number of sentimental Analysis by Afinn:", sum(MatchAfinn))
+    print("Number of dataset:", len(df))
+    print(f"Accuracy percentage of sentimental by Afinn {str(round(rating_accuracy_afinn, 2))}%")
 
     #3.SentimentAnalysis with Vader
 
@@ -184,9 +186,29 @@ def sentimental_analysis():
     pdf_pages.savefig() ##>>> save plot
     MatchVader = df['rating_scale3'] == df['sentiment_Vader']
     df
-    print(sum(MatchVader))
-    print(len(df))
-    print(sum(MatchVader)/len(df))
+    rating_accuracy_vader = (sum(MatchVader) / len(df)) * 100
+    print("Number of sentimental Analysis by Vader:", sum(MatchVader))
+    print("Number of dataset:", len(df))
+    print(f"Accuracy percentage of sentimental by Vader {str(round(rating_accuracy_vader, 2))}%")
+
+
+    ##>>>>>>>>>> RASA ADD: inset dataset into csv, elasticsearch and add plot to pdf
+    print("\n\nSentimental Analysis Result of All Models 'TextBlob, Afinn, Vader'")
+    rating_counts = df['rating_scale3'].value_counts(normalize=True) * 100
+    rating_counts_vader = df['sentiment_Vader'].value_counts(normalize=True) * 100
+    rating_counts_afinn = df['sentiment_Afinn'].value_counts(normalize=True) * 100
+    rating_counts_text_blob = df['sentiment_TextBloB'].value_counts(normalize=True) * 100
+    sentimental_output = {"rating_counts": {"Overal": rating_counts.to_dict(), "sentiment_vader": rating_counts_vader.to_dict(), "sentiment_afinn": rating_counts_afinn.to_dict(), "sentiment_text_blob": rating_counts_text_blob.to_dict()},
+                          "rating_accuracy": {"textblob_accuracy": rating_accuracy_textblob, "afinn_accuracy": rating_accuracy_afinn, "vader_accuracy": rating_accuracy_vader}}
+    from pprint import pprint
+    pprint(sentimental_output)
+
+    from auth.server_authentication import elastic_authen
+    client_conn = elastic_authen()
+    resp = client_conn.index(index="sentimental_result", id=1,  document=sentimental_output)
+    print(resp['result'])
+    ##>>>>>>>>>> END OF RASA ADD
+    
 
     # Filter the DataFrame for entries related to Amscot
     ams_df = df[df['company'] == 'Amscot']
@@ -337,3 +359,5 @@ def sentimental_analysis():
     res = save_pdf_to_elasticsearch()
 
     print(f"plots: {res['result']}")
+
+    return sentimental_output
