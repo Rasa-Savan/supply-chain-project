@@ -84,11 +84,9 @@ jobs:
           script: |
             docker rm -f supply-chain
             docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
-            pwd
-            ls -l
-            cd supply-chain-project
+            sleep 10 
             docker compose -f docker-compose-spc.yml up -d ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
             docker ps 
             docker images
-            sleep 10
+            sleep 10 
             curl 'http://localhost:8008/status/db'
