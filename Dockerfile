@@ -1,8 +1,16 @@
 FROM python:3.9
 
+ARG ES_USERNAME
+ARG ES_PASSWORD
+
+ENV ES_USERNAME=${ES_USERNAME}
+ENV ES_PASSWORD=${ES_PASSWORD}
+
 RUN mkdir FastAPI
 
 COPY server/. /FastAPI/server
+COPY docker-compose-spc.yml /FastAPI
+
 COPY config/http_ca.crt /etc/ssl/certs
 RUN chown root:root /etc/ssl/certs/http_ca.crt
 

@@ -3,14 +3,14 @@ version: '3.8'
 services:
 
   supply-chain:
-    image: 082503/fastapi-supply-chain:1.0.0
+    image: 082503/supply-chain-project:latest
     container_name: supply-chain
     ports:
       - "8008:8008"
     networks:
       - supply-chain-net
-    env_file:
-      - config/.env
+    # env_file:
+    #   - config/.env
 
 networks:
   supply-chain-net:

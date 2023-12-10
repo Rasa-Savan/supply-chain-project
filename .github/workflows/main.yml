@@ -21,9 +21,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install dependencies
       run: |
-        mkdir FastAPI
-        # sudo cp config/http_ca.crt /etc/ssl/certs
-        # chown root:root /etc/ssl/certs/http_ca.crt
         python -m pip install --upgrade pip
         pip install "fastapi[all]"
         python -m pip install --upgrade pip
@@ -47,7 +44,6 @@ jobs:
         python -m pip install afinn
         python -m pip install vaderSentiment
         python -m pip install pytest
-        # cd /FastAPI/server
     - name: Test api
       run: |
         pytest
@@ -65,7 +61,32 @@ jobs:
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v3
+      env:
+        ES_USERNAME: ${{ secrets.ES_USERNAME }}
+        ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:1.0.0
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+          
+  deploy:
+    needs: build-push-container
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTNAME  }}
+          username: ${{ secrets.USER_NAME  }}
+          key: ${{ secrets.CONTABO_PRIVATE_KEY  }}
+          port: 22
+          script: |
+            sudo docker rm -f supply-chain
+            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+            sleep 10 
+            sudo docker compose -f docker-compose-spc.yml up -d ${{ secrets.DOCKERHUB_USERNAME }}/supply-chain-project:latest
+            sudo docker ps 
+            sudo docker images
+            sleep 10 
+            curl 'http://localhost:8008/status/db'
