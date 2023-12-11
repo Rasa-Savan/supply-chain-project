@@ -142,6 +142,10 @@ async def get_current_active_user(
     return current_user
 
 
+@app.get("/")
+def test_sp():
+    return {"message": "testing demo"}
+
 # Generate jwt for authentication on protected route
 @app.post("/token", response_model=Token, tags=["SECURITY"])
 async def login_for_access_token(
