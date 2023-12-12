@@ -64,7 +64,14 @@ def cleaning_comments():
     df['reviewer_exp_date'] = pd.to_datetime(df['reviewer_exp_date'], format='%B %d, %Y', errors='coerce')
     df['reviewer_exp_date'] = df['reviewer_exp_date'].dt.strftime('%Y-%m-%d')
 
-    df.to_csv(f"files/comments_cleaned.csv", index=False, encoding="utf-8")
+    
+    filtered_df = df[df['reviewer_rate'].notnull() & df['reviewer_message'].notnull()]
+ 
+    # Show the resulting DataFrame
+    filtered_df.info()
+
+    filtered_df.to_csv(f"files/comments_cleaned.csv", index=False, encoding="utf-8")
+    # df.to_csv(f"files/comments_cleaned.csv", index=False, encoding="utf-8")
 
     # Write the list of dictionaries to a JSON file
     with open(f"files/comments_cleaned.json", 'w', encoding='utf-8') as json_file:
