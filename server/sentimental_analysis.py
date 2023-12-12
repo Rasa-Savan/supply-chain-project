@@ -14,7 +14,8 @@ from afinn import Afinn
 def sentimental_analysis():
 
     #Loading the File
-    df = pd.read_csv('./files/comments_cleaned.csv',usecols=['domain_name','reviewer_country','reviewer_rate', 'reviewer_message']).rename(columns={'domain_name': 'company','reviewer_country':'country','reviewer_rate': 'rating', 'reviewer_message': 'reviews'})
+    df = pd.read_csv('./files/comments_cleaned_for_sentimental.csv')
+    # df = pd.read_csv('./files/comments_cleaned.csv',usecols=['domain_name','reviewer_country','reviewer_rate', 'reviewer_message']).rename(columns={'domain_name': 'company','reviewer_country':'country','reviewer_rate': 'rating', 'reviewer_message': 'reviews'})
     #df.columns = ['rating', 'reviews']
     #df
     # Now, the DataFrame will have the "Reviews" column
