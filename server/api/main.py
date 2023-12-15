@@ -141,9 +141,9 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-@app.get("/demo")
-def demo_system():
-    return {"message": "This is demo"}
+# @app.get("/demo")
+# def demo_system():
+#     return {"message": "This is demo"}
 
 # Generate jwt for authentication on protected route
 @app.post("/token", response_model=Token, tags=["SECURITY"])
